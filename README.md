@@ -1,5 +1,7 @@
-#ElasticSearchTool 使用方法
-##composer.json
+ElasticSearchTool 使用方法
+=
+composer.json
+-
 Add elasticsearch/elasticsearch
 ```json
 {
@@ -8,7 +10,8 @@ Add elasticsearch/elasticsearch
     }
 }
 ```
-##Config 配置
+Config 配置
+-
 ```php
  [
  	'elasticsearch' => [
@@ -44,9 +47,10 @@ Add elasticsearch/elasticsearch
  	'search_log' => 0
  ];
 ```
-#使用教程
-##搜索功能模块
-####方法介绍
+使用教程
+-
+搜索功能模块方法介绍
+-
 1.match()
 - 传入值为 array 可多条件
 - 分词搜索/全匹配搜索 
