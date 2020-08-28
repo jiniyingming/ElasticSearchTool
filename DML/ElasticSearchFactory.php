@@ -145,7 +145,7 @@ class ElasticSearchFactory extends SearchStatisticalFactory
 	 * @return $this
 	 * 是否模糊搜索 true 完全匹配 false 分词匹配
 	 */
-	public function isFuzzy(bool $isTrue = false): ElasticSearchFactory
+	public function isFuzzy(bool $isTrue): ElasticSearchFactory
 	{
 		$this->isFuzzy = $isTrue;
 		return $this;
@@ -274,149 +274,170 @@ class ElasticSearchFactory extends SearchStatisticalFactory
 	 */
 	public $params = [];
 
-	/**
-	 * @return array
-	 * 组装条件
-	 */
-	public function setParams(): array
-	{
-		$this->params = [
-			'index' => $this->index,
-			'type' => $this->type,
-		];
-		$this->params['body']['from'] = $this->offset;
-		$this->params['body']['size'] = $this->pageSize;
-		if ($this->sort) {
-			$this->params['body']['sort'] = $this->sort;
-		}
-		if ($this->_source) {
-			$this->params['body']['_source'] = $this->_source;
-		}
-		if (!empty($this->distinctField)) {
-			$this->params['body']['collapse']['field'] = $this->distinctField;
-		}
-		//搜索条件
-		//query string 搜索方式
-		$this->setQueryParams();
-		//作为必要条件筛选
-		$this->setMatchParams();
-		//作为非必要筛选项 OR
-		$this->setShouldParams();
-		//去除条件
-		$this->setNotParams();
-		//必须筛选项
-		$this->setMustParams();
-		//--必须 包含 或 条件
-		$this->setMustShouldParams();
-		//聚合数组组装
-		if ($this->aggiData) {
-			$this->params['body']['aggs'] = $this->aggiData;
-		}
-		return $this->params;
-	}
+    /**
+     * @return array
+     * 组装条件
+     */
+    public function setParams(): array
+    {
+        $this->params = [
+            'index' => $this->index,
+            'type' => $this->type,
+        ];
+        $this->params['body']['from'] = $this->offset;
+        $this->params['body']['size'] = $this->pageSize;
+        if ($this->sort) {
+            $this->params['body']['sort'] = $this->sort;
+        }
+        if ($this->_source) {
+            $this->params['body']['_source'] = $this->_source;
+        }
+        if (!empty($this->distinctField)) {
+            $this->params['body']['collapse']['field'] = $this->distinctField;
+        }
+        //搜索条件
+        //query string 搜索方式
+        $this->setQueryParams();
+        //作为必要条件筛选
+        $this->setMatchParams();
+        //作为非必要筛选项 OR
+        $this->setShouldParams();
+        //去除条件
+        $this->setNotParams();
+        //必须筛选项
+        $this->setMustParams();
+        $this->setMustShouldParams();
+        $this->setMustCustomizeParams();
+        if($this->filter_params)
+        {
+            $this->params['body']['query']['bool']['must'][]['bool']['filter'][] = $this->filter_params;
+        }
 
-	/**
-	 * 设置QUERY 方式信息
-	 */
-	private function setQueryParams(): void
-	{
-		if ($this->searchWhere) {
-			$this->params['body']['query']['bool']['must'][] = [
-				'query_string' => [
-					'query' => $this->searchWhere['query'],
-					'fields' => $this->searchWhere['query_field']
-				]
-			];
-		}
-	}
+        //聚合数组组装
+        if ($this->aggiData) {
+            $this->params['body']['aggs'] = $this->aggiData;
+        }
+        return $this->params;
+    }
 
-	/**
-	 * @var string[]
-	 * 区间标识符转换
-	 */
-	private $intervalMapping = [
-		'>' => 'gt',
-		'>=' => 'gte',
-		'<' => 'lt',
-		'<=' => 'lte',
-	];
+    private function setMustCustomizeParams()
+    {
+        if (!empty($this->MustCustomizeParams)) {
+            foreach ($this->MustCustomizeParams as $key => $customizeParam) {
+                foreach ($customizeParam as $k => $v) {
+                    $this->filter_params[][$key][$k]=$v;
+                }
+            }
+        }
+    }
 
-	/**
-	 * @param array $val
-	 * @return $this
-	 * 自定义搜索结构条件
-	 */
-	public function setMustCustomizeParams(array $val): ElasticSearchFactory
-	{
-		$this->params['body']['query']['bool']['must'][]['bool']['filter'][] = $val;
-		return $this;
-	}
+    /**
+     * 设置QUERY 方式信息
+     */
+    private function setQueryParams(): void
+    {
+        if ($this->searchWhere) {
+            $this->params['body']['query']['bool']['must'][] = [
+                'query_string' => [
+                    'query' => $this->searchWhere['query'],
+                    'fields' => $this->searchWhere['query_field']
+                ]
+            ];
+        }
+    }
 
-	/**
-	 * @param $filterField
-	 * @param $filterData
-	 * @return array
-	 * 设置区间筛选量
-	 */
-	private function setInterval($filterField, $filterData): array
-	{
-		if (is_string($filterData) && empty($filterData)) {
-			return [];
-		}
-		$type = 'term';
-		if (is_array($filterData)) {
+    /**
+     * @var string[]
+     * 区间标识符转换
+     */
+    private $intervalMapping = [
+        '>' => 'gt',
+        '>=' => 'gte',
+        '<' => 'lt',
+        '<=' => 'lte',
+    ];
 
-			$type = 'terms';
-			$filter = [$type => [$filterField => $filterData]];
-			if (count($filterData) === 2 && is_string($filterData[0]) && isset($this->intervalMapping[$filterData[0]])) {
-				$filter = ["range" => [$filterField => [$this->intervalMapping[$filterData[0]] => $filterData[1]]]];
-			}
-		} else {
-			$filter = [$type => [$filterField => $filterData]];
-		}
-		return $filter;
-	}
+    private $MustCustomizeParams;
 
-	/**
-	 * @param array $params
-	 * @return $this
-	 * 搜索格式：['price'=>[['>=',10],['<',12]]]
-	 * 设置区间条件
-	 */
-	public function between(array $params): ElasticSearchFactory
-	{
-		try {
-			foreach ($params as $field => $param) {
-				$intervalMapping = $this->intervalMapping;
-				$range = [];
-				array_map(static function ($val) use ($intervalMapping, $field, &$range) {
-					[$sign, $item] = $val;
-					$range[$field][$intervalMapping[$sign]] = $item;
-				}, $param);
-				$this->params['body']['query']['bool']['must'][]['bool']['filter'][]['range'] = $range;
-			}
-		} catch (Exception $exception) {
-			throw new RuntimeException("参数格式有误 eg: ['price'=>[['>=',10],['<',12]]]");
+    /**
+     * @param $filter_type
+     * @param $key
+     * @param array $val
+     * @return $this
+     * 自定义搜索结构条件
+     */
+    public function setMustCustomize($filter_type, $key, array $val): self
+    {
+        $this->MustCustomizeParams[$filter_type][$key] = $val;
+        return $this;
+    }
 
-		}
-		return $this;
-	}
+    /**
+     * @param $filterField
+     * @param $filterData
+     * @return array
+     * 设置区间筛选量
+     */
+    private function setInterval($filterField, $filterData): array
+    {
+        if (is_string($filterData) && empty($filterData)) {
+            return [];
+        }
+        $type = 'term';
+        if (is_array($filterData)) {
 
-	/**
-	 * 设置并条件信息集
-	 */
-	private function setMustParams(): void
-	{
-		if ($this->isMustData) {
-			foreach ($this->isMustData as $field => $word) {
-				$data = $this->setInterval($field, $word);
-				if (empty($data)) {
-					continue;
-				}
-				$this->params['body']['query']['bool']['must'][]['bool']['filter'][] = $data;
-			}
-		}
-	}
+            $type = 'terms';
+            $filter = [$type => [$filterField => $filterData]];
+            if (count($filterData) === 2 && is_string($filterData[0]) && isset($this->intervalMapping[$filterData[0]])) {
+                $filter = ["range" => [$filterField => [$this->intervalMapping[$filterData[0]] => $filterData[1]]]];
+            }
+        } else {
+            $filter = [$type => [$filterField => $filterData]];
+        }
+        return $filter;
+    }
+
+    /**
+     * @param array $params
+     * @return $this
+     * 搜索格式：['price'=>[['>=',10],['<',12]]]
+     * 设置区间条件
+     */
+    public function between(array $params): self
+    {
+        try {
+            foreach ($params as $field => $param) {
+                $intervalMapping = $this->intervalMapping;
+                $range = [];
+                array_map(static function ($val) use ($intervalMapping, $field, &$range) {
+                    [$sign, $item] = $val;
+                    $range[$field][$intervalMapping[$sign]] = $item;
+                }, $param);
+                $this->params['body']['query']['bool']['must'][]['bool']['filter'][]['range'] = $range;
+            }
+        } catch (\Exception $exception) {
+            throw new \RuntimeException("参数格式有误 eg: ['price'=>[['>=',10],['<',12]]]");
+
+        }
+        return $this;
+    }
+    private $filter_params;
+    /**
+     * 设置并条件信息集
+     */
+    private function setMustParams(): void
+    {
+        if ($this->isMustData) {
+            $filter = [];
+            foreach ($this->isMustData as $field => $word) {
+                $data = $this->setInterval($field, $word);
+                if (empty($data)) {
+                    continue;
+                }
+                $this->filter_params[] = $data;
+            }
+        }
+    }
 
 	/**
 	 * 设置Not 信息集
