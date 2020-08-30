@@ -110,7 +110,7 @@ Config 配置
 - 参数类型 string
 
 11.getOneByEs()
-- 插叙单条数据 
+- 查询单条数据 
 - 参数类型 int
 
 12.setShouldCustomizeParams()
