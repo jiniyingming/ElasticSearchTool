@@ -6,10 +6,10 @@ use ElasticSearchTool\ElasticTool;
 
 class Test
 {
-		public function testIndex()
-		{
-				$model = new ElasticTool();
-				print_r($model);
-				die;
-		}
+	public function testIndex()
+	{
+		$model = new ElasticTool();
+		print_r($model);
+		die;
+	}
 }
