@@ -73,7 +73,7 @@ Config 配置
                          'match_phrase'=>[
                              'search_key'=>'search_word'||[search_word,boost],...
                      ],
-             'filter'=>['filter_key'=>'(int||string||array)filter_value',....]
+             'filter'=>['filter_key'=>'(int||string||array)filter_value',...]
         ];
 ```
 4.query()
