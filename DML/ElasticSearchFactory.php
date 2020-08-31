@@ -389,7 +389,7 @@ class ElasticSearchFactory extends SearchStatisticalFactory
 			$filter = [$type => [$filterField => $filterData]];
 			if (count($filterData) === 2 && is_string($filterData[0]) && isset($this->intervalMapping[$filterData[0]])) {
 				$filter = ["range" => [$filterField => [$this->intervalMapping[$filterData[0]] => $filterData[1]]]];
-			} elseif (1 == count($filterData)) {
+			} elseif (1 == count($filterData) && isset($this->intervalMapping[key($filterData)])) {
 				$filter = ["range" => [$filterField => [$this->intervalMapping[key($filterData)] => $filterData[key($filterData)]]]];
 			}
 		} else {
