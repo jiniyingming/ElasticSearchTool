@@ -744,9 +744,6 @@ class ElasticSearchFactory extends SearchStatisticalFactory
 					++$key;
 				}
 			}
-			if (!empty($returnData['groupList'])) {
-				$returnData['groupList'] = array_chunk($data, $count);
-			}
 		}
 		return $returnData;
 	}

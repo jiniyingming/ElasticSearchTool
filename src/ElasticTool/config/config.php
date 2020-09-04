@@ -1,34 +1,11 @@
 <?php
 return [
 	'elasticsearch' => [
-		'index' => env('ELASTICSEARCH_PREFIX', 'fx_'),
-		'prefix' => env('ELASTICSEARCH_PREFIX', 'fx_'),
 		'hosts' => [
-			env('ELASTICSEARCH_HOST', 'http://localhost'),
+			env('ELASTIC_TOOL_HOST', 'http://localhost'),
 		],
-		'analyzer' => env('ELASTICSEARCH_ANALYZER', 'ik_max_word'),
-		'settings' => [],
-		'filter' => [
-			'+',
-			'-',
-			'&',
-			'|',
-			'!',
-			'(',
-			')',
-			'{',
-			'}',
-			'[',
-			']',
-			'^',
-			'\\',
-			'"',
-			'~',
-			'*',
-			'?',
-			':'
-		]
 	],
 	//--开启搜索日志
-	'search_log' => 0
+	'search_log' => env('ELASTIC_TOOL_LOG', 0),
+	'search_log_path' => env('ELASTIC_TOOL_LOG_PATH'),
 ];

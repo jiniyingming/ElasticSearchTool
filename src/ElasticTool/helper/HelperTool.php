@@ -134,11 +134,12 @@ class HelperTool
 	 */
 	public static function makeDir($filename, $logOut, $type, $path = null, $is_append = true): void
 	{
-		if ($path) {
-			$log_url = $path;
+		if (!self::config('search_log_path')) {
+			$log_url = '/log/' . $type . '/';
 		} else {
-			$log_url = __DIR__ . '../../../../../log/';
+			$log_url = self::config('search_log_path') . $type . '/';
 		}
+
 		if (!is_dir($log_url)) {
 			$damask = umask(0);
 			if (!mkdir($log_url, 0777, true) && !is_dir($log_url)) {
