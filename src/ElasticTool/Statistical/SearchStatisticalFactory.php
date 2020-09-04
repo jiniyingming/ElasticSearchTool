@@ -1,10 +1,10 @@
 <?php /** @noinspection ALL */
 
 
-namespace App\Libs\ElasticSearchTool\Statistical;
+namespace ElasticTool\Statistical;
 
 
-use App\Libs\ElasticSearchTool\helper\HelperTool;
+use ElasticTool\helper\HelperTool;
 
 class SearchStatisticalFactory
 {

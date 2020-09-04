@@ -4,10 +4,10 @@
  * 搜索基础
  */
 
-namespace App\Libs\ElasticSearchTool\DML;
+namespace ElasticTool\DML;
 
-use App\Libs\ElasticSearchTool\helper\HelperTool;
-use App\Libs\ElasticSearchTool\Statistical\SearchStatisticalFactory;
+use ElasticTool\helper\HelperTool;
+use ElasticTool\Statistical\SearchStatisticalFactory;
 use Elasticsearch\Client;
 use exception;
 use JsonException;

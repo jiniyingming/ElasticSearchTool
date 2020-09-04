@@ -1,10 +1,10 @@
 <?php
 
 
-namespace App\Libs\ElasticSearchTool\DDL;
+namespace ElasticTool\DDL;
 
 
-use App\Libs\ElasticSearchTool\ElasticTool;
+use ElasticTool\ElasticTool;
 use Elasticsearch\Client;
 
 class ElasticFactory

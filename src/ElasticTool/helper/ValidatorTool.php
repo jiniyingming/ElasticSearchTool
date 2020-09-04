@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Libs\ElasticSearchTool\helper;
+namespace ElasticTool\helper;
+
 use Exception;
 use RuntimeException;
 
 /**
  * Class ValidatorTool
- * @package App\Libs\ElasticSearchTool\helper
+ * @package ElasticTool\helper
  * 验证类
  */
 class ValidatorTool

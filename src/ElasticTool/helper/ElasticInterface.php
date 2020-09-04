@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Libs\ElasticSearchTool\helper;
+namespace ElasticTool\helper;
 
 interface ElasticInterface
 {

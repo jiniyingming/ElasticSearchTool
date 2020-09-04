@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Libs\ElasticSearchTool\helper;
+namespace ElasticTool\helper;
 
 use RuntimeException;
 
 /**
  * Class HelperTool
- * @package App\Libs\ElasticSearchTool\helper
+ * @package ElasticTool\helper
  * 工具类
  */
 class HelperTool
@@ -137,7 +137,7 @@ class HelperTool
 		if ($path) {
 			$log_url = $path;
 		} else {
-			$log_url = __DIR__ . '../../../../../log/' . $type . '/' . date('Y-m-d') . '/';
+			$log_url = __DIR__ . '../../../../../log/';
 		}
 		if (!is_dir($log_url)) {
 			$damask = umask(0);

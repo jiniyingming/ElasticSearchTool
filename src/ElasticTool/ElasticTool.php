@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Libs\ElasticSearchTool;
+namespace ElasticTool;
 
-use App\Libs\ElasticSearchTool\DDL\ElasticFactory;
-use App\Libs\ElasticSearchTool\DML\ElasticDescFactory;
-use App\Libs\ElasticSearchTool\DML\ElasticSearchFactory;
-use App\Libs\ElasticSearchTool\helper\ElasticInterface;
-use App\Libs\ElasticSearchTool\helper\HelperTool;
+use ElasticTool\DDL\ElasticFactory;
+use ElasticTool\DML\ElasticDescFactory;
+use ElasticTool\DML\ElasticSearchFactory;
+use ElasticTool\helper\ElasticInterface;
+use ElasticTool\helper\HelperTool;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
 

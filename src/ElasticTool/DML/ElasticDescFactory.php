@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Libs\ElasticSearchTool\DML;
+namespace ElasticTool\DML;
 
 
 use Elasticsearch\Client;

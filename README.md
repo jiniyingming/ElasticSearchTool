@@ -1,5 +1,10 @@
 ElasticSearchTool 使用方法
 =
+Composer 下载
+```text
+composer require yeoman_j/elastic-tool
+```
+-
 composer.json
 -
 Add elasticsearch/elasticsearch
@@ -157,8 +162,10 @@ Config 配置
 ```php
     ElasticTool::operationIndex();
 ```
-##数据的添加与修改
-####批量添加或更新 根据id判别增或改
+数据的添加与修改
+-
+批量添加或更新 根据id判别增或改
+--
 ```php
     $index = 'a_index';
     $data = [
@@ -174,7 +181,8 @@ Config 配置
 ];
     ElasticTool::operationDesc($index)->addAll($data);
 ```
-####更新数据
+更新数据
+-
 ```php
     $index = 'a_index';
     $id = 1;
