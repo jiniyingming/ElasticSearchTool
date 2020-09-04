@@ -51,7 +51,7 @@ class ElasticTool implements ElasticInterface
 	 * @return ElasticSearchFactory
 	 * 数据搜索操作
 	 */
-	public static function operationSearch($index): ElasticSearchFactory
+	public static function operationSearch($index = ''): ElasticSearchFactory
 	{
 		self::setClient();
 		return new ElasticSearchFactory(self::$client, $index);

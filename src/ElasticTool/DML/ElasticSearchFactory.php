@@ -82,7 +82,11 @@ class ElasticSearchFactory extends SearchStatisticalFactory
 	public function __construct(Client $client, string $index)
 	{
 		if (!$index) {
-			throw new \http\Exception\RuntimeException('index not found');
+			if (!HelperTool::config('elasticsearch.default_index')) {
+				throw new \http\Exception\RuntimeException('index not found');
+			} else {
+				$index = HelperTool::config('elasticsearch.default_index');
+			}
 		}
 		$this->client = $client;
 		$this->index = $index;
