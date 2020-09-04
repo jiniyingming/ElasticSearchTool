@@ -1,4 +1,6 @@
-<?php
+<?php /** @noinspection ALL */
+
+/** @noinspection ALL */
 
 namespace ElasticTool\helper;
 
@@ -90,7 +92,7 @@ class HelperTool
 
 	/**
 	 * @param array $math_set
-	 * @param float $relativity_per 相关度百分比
+	 * @param float|null $relativity_per 相关度百分比
 	 * @return string 设置搜索排序公式
 	 * 设置搜索排序公式
 	 */
@@ -129,10 +131,9 @@ class HelperTool
 	 * @param $logOut
 	 * @param $type
 	 * 日志记录
-	 * @param null $path
 	 * @param bool $is_append
 	 */
-	public static function makeDir($filename, $logOut, $type, $path = null, $is_append = true): void
+	public static function makeDir($filename, $logOut, $type, $is_append = true): void
 	{
 		if (!self::config('search_log_path')) {
 			$log_url = '/log/' . $type . '/';
