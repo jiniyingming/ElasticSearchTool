@@ -20,7 +20,8 @@
   "minimum-stability": "dev",
   "autoload": {
     "psr-4": {
-      "huaweichenai\\discern\\": ".."
+      "huaweichenai\\discern\\": "..",
+      "ElasticTool\\": "src/ElasticTool/"
     }
   }
 }
