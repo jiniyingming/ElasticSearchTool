@@ -13,7 +13,7 @@ class ElasticDescFactory
 	private $index;
 
 
-	public function __construct(Client $elasticTool, string $index)
+	public function __construct($elasticTool, string $index)
 	{
 		if (!$index) {
 			throw new RuntimeException('index not found');
@@ -29,21 +29,18 @@ class ElasticDescFactory
 	 */
 	public function addAll(array $data)
 	{
-		$params = [];
-		foreach ($data as $datum) {
-			if (!is_array($datum)) {
-				throw new \RuntimeException('batch parameter error');
-			}
+		$params = [
+			'body' => [],
+		];
+		foreach ($data as $record) {
 			$params['body'][] = [
 				'index' => [
-					'_index' => $this->index
+					'_index' => $this->index,
 				],
-				$datum
 			];
+			$params['body'][] = $record;
 		}
-		if (empty($params)) {
-			throw new \RuntimeException('insert data empty');
-		}
+
 		$response = self::$client->bulk($params);
 		if (isset($response['errors']) && is_array($response['items']) && false === $response['errors']) {
 			$ids = [];
