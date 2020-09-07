@@ -5,6 +5,7 @@ namespace ElasticTool\DML;
 
 
 use Elasticsearch\Client;
+use ElasticTool\ElasticTool;
 use http\Exception\RuntimeException;
 
 class ElasticDescFactory
@@ -71,5 +72,41 @@ class ElasticDescFactory
 
 
 		return self::$client->update($parameters);
+	}
+
+	/**
+	 * @param $index
+	 * @param $size
+	 * @param array $where_params
+	 * @param $deal_handler
+	 * 游标取所有数据
+	 * 批量处理数据
+	 */
+	public function scrollBatchDeal($index, $size, array $where_params, $deal_handler)
+	{
+		if (!$deal_handler) {
+			throw new RuntimeException('数据处理程序 不存在');
+		}
+		set_time_limit(0);
+		$params = [
+			"scroll" => "60s",
+			"size" => $size,
+			"index" => $index,
+		];
+		if ($where_params) {
+			$params = array_merge($params, $where_params);
+		}
+
+		$response = self::$client->search($params);
+		while (isset($response['hits']['hits']) && count($response['hits']['hits']) > 0) {
+			$scroll_id = $response['_scroll_id'];
+			$data_set = ElasticTool::operationSearch($index)->setSearchList($response)['list'];
+			$deal_handler($data_set);
+			$response = self::$client->scroll([
+					"scroll_id" => $scroll_id,  //...using our previously obtained _scroll_id
+					"scroll" => "60s"           // and the same timeout window
+				]
+			);
+		}
 	}
 }
